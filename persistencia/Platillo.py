@@ -22,3 +22,18 @@ class Platillo:
         finally:
             if conn:
                 conn.close()
+        
+    def listarCategorias(self):
+        try:
+            conn = get_db()
+            with conn.cursor() as cursor:
+                sql = "CALL ObtenerCategorias()"
+                cursor.execute(sql)
+                platillos = cursor.fetchall()
+                return platillos
+        except Exception as e:
+            return e
+        finally:
+            if conn:
+                conn.close()
+
