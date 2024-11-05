@@ -18,19 +18,21 @@ class Cliente:
         try:
             conn = get_db()
             with conn.cursor() as cursor:
-                cursor.callproc('registrarCliente', (
+                params = (
                     self.usuario,
                     self.contrasena,
                     self.nombres,
                     self.apellidos,
                     self.correo,
                     self.telefono, 
-                    self.direccion
-                ))
-                conn.commit()
-                cursor.execute("SELECT LAST_INSERT_ID() AS idCliente;")
+                    self.direccion,
+                    0
+                )
+                cursor.callproc('registrarCliente', params)
+                cursor.execute("SELECT @_registrarCliente_7 AS idCliente;")
                 result = cursor.fetchone()
                 self.id = result['idCliente']
+                conn.commit()
                 return {'status': 'success', 'idCliente': self.id}
         except Exception as e:
              return {'status': 'error', 'error': str(e)}

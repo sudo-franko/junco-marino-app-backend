@@ -25,7 +25,7 @@ class Pedido:
             conn = get_db()
             with conn.cursor() as cursor:
                 detallePedido_json = json.dumps(self.detallePedido)
-                cursor.callproc('registrarPedidoAnonimo', (
+                params = (
                     self.nombreCliente,
                     self.telefonoCliente,
                     self.direccionCliente,
@@ -33,12 +33,14 @@ class Pedido:
                     self.tipoEntrega,
                     self.tipoPago,
                     self.monto,
-                    detallePedido_json
-                ))
-                conn.commit()
-                cursor.execute("SELECT LAST_INSERT_ID() AS idPedido;")
+                    detallePedido_json,
+                    0
+                )
+                cursor.callproc('registrarPedidoAnonimo', params)
+                cursor.execute("SELECT @_registrarPedidoAnonimo_8 AS idPedido;")
                 result = cursor.fetchone()
                 self.id = result['idPedido']
+                conn.commit()
                 return {'status': 'success', 'idPedido': self.id}
         except Exception as e:
              return {'status': 'error', 'error': str(e)}
@@ -52,7 +54,7 @@ class Pedido:
             conn = get_db()
             with conn.cursor() as cursor:
                 detallePedido_json = json.dumps(self.detallePedido)
-                cursor.callproc('registrarPedidoCliente', (
+                params = (
                     self.idCliente,
                     self.nombreCliente,
                     self.telefonoCliente,
@@ -61,12 +63,14 @@ class Pedido:
                     self.tipoEntrega,
                     self.tipoPago,
                     self.monto,
-                    detallePedido_json
-                ))
-                conn.commit()
-                cursor.execute("SELECT LAST_INSERT_ID() AS idPedido;")
+                    detallePedido_json,
+                    0
+                )
+                cursor.callproc('registrarPedidoCliente', params)
+                cursor.execute("SELECT @_registrarPedidoCliente_9 AS idPedido;")
                 result = cursor.fetchone()
                 self.id = result['idPedido']
+                conn.commit()
                 return {'status': 'success', 'idPedido': self.id}
         except Exception as e:
              return {'status': 'error', 'error': str(e)}

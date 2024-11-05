@@ -4,6 +4,7 @@ import os
 import platform
 from controladores.PlatilloControl import platilloControl
 from controladores.PedidoControl import pedidoControl
+from controladores.ClienteControl import clienteControl
 
 app = Flask(__name__)
 CORS(app)
@@ -34,6 +35,7 @@ def saludar():
 
 app.register_blueprint(platilloControl)
 app.register_blueprint(pedidoControl)
+app.register_blueprint(clienteControl)
 
 
 if __name__ == '__main__':
