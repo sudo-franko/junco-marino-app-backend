@@ -45,6 +45,8 @@ if __name__ == '__main__':
         os.makedirs(app.config['IMAGEN_FOLDER'])
     if not os.path.exists(app.config['QR_FOLDER']):
         os.makedirs(app.config['QR_FOLDER'])
+    if not os.path.exists(app.config['CATEGORIA_FOLDER']):
+        os.makedirs(app.config['CATEGORIA_FOLDER'])
 
     app.run(host='0.0.0.0', debug=True, port=4000)
 
