@@ -39,3 +39,25 @@ class Cliente:
         finally:
             if conn:
                 conn.close()
+
+
+    def actualizar(self):
+        try:
+            conn = get_db()
+            with conn.cursor() as cursor:
+                params = (
+                    self.id,
+                    self.nombres,
+                    self.apellidos,
+                    self.correo,
+                    self.telefono,
+                    self.direccion
+                )
+                cursor.callproc('actualizarCliente', params)
+                conn.commit()
+                return {'status': 'success', 'message': 'Cliente actualizado exitosamente'}
+        except Exception as e:
+            return {'status': 'error', 'error': str(e)}
+        finally:
+            if conn:
+                conn.close()

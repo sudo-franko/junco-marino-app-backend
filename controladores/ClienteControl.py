@@ -8,7 +8,7 @@ clienteControl = Blueprint('clienteControl', __name__)
 def registrarCliente():
     if not request.is_json:
         return jsonify({'status': 'error', 'message': 'Content-type must be application/json'}), 400
-
+    
     data = request.get_json()
 
     nombres = data.get('nombres')
@@ -31,4 +31,38 @@ def registrarCliente():
 
     result = cliente.registrar()
 
-    return jsonify(result)
+    if result.get('status') == 'success':
+        return jsonify(result), 200
+    else:
+        return jsonify(result), 500
+
+
+
+@clienteControl.route('/actualizarCliente/<int:idCliente>', methods=['PUT'])
+def actualizarCliente(idCliente):
+    if not request.is_json:
+        return jsonify({'status': 'error', 'message': 'Content-type must be application/json'}), 400
+    
+    data = request.get_json()
+
+    nombres = data.get('nombres')
+    apellidos = data.get('apellidos')
+    correo = data.get('correo')
+    telefono = data.get('telefono')
+    direccion = data.get('direccion')
+
+    cliente = Cliente(
+        idCliente=idCliente,
+        nombres=nombres,
+        apellidos=apellidos,
+        correo=correo,
+        telefono=telefono,
+        direccion=direccion
+    )
+
+    result = cliente.actualizar()
+
+    if result.get('status') == 'success':
+        return jsonify(result), 200
+    else:
+        return jsonify(result), 500

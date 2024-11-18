@@ -1,8 +1,31 @@
 from flask import Blueprint, request, jsonify, send_from_directory, current_app
 from persistencia.Pedido import Pedido
 import os
+import qrcode
 
 pedidoControl = Blueprint('pedidoControl', __name__)
+
+def generarQR(data):
+    qr = qrcode.QRCode(
+        version=4, 
+        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        box_size=10,
+        border=2,
+    )
+    qr.add_data(data)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    path = os.path.join(current_app.config['QR_FOLDER'], f'{data}.png')
+    img.save(path)
+    return 'Codigo guardado'
+
+def buscarQR(id):
+    filepath = os.path.join(current_app.config['QR_FOLDER'], f'{id}.png')
+    if os.path.exists(filepath):
+        return f'{id}.png'
+    return False
+
+
 
 @pedidoControl.route('/registrarPedidoAnonimo', methods=['POST'])
 def registrarPedidoAnonimo():
@@ -32,8 +55,14 @@ def registrarPedidoAnonimo():
     )
 
     result = pedido.registrarPedidoAnonimo()
-
-    return jsonify(result)
+    
+    if result.get('status') == 'success':
+        idPedido = result.get('idPedido')
+        generarQR(idPedido)
+        return jsonify({'status': 'success', 'message': 'Pedido registrado correctamente', 'idPedido': idPedido}), 200
+    else:
+        error_message = result.get('error', 'Error desconocido')
+        return jsonify({'status': 'error', 'message': error_message}), 500
 
 
 @pedidoControl.route('/registrarPedidoCliente', methods=['POST'])
@@ -67,4 +96,41 @@ def registrarPedidoCliente():
 
     result = pedido.registrarPedidoCliente()
 
+    if result.get('status') == 'success':
+        idPedido = result.get('idPedido')
+        generarQR(idPedido)
+        return jsonify({'status': 'success', 'message': 'Pedido registrado correctamente', 'idPedido': idPedido}), 200
+    else:
+        error_message = result.get('error', 'Error desconocido')
+        return jsonify({'status': 'error', 'message': error_message}), 500
+    
+
+@pedidoControl.route('/obtenerQR/<int:id_qr>', methods=['GET'])
+def obtenerQR(id_qr):
+    filename = buscarQR(id_qr)
+    if filename:
+        return send_from_directory(current_app.config['QR_FOLDER'], filename)
+    else:
+        return jsonify({'error': 'Imagen de QR no encontrado'}), 404
+    
+
+@pedidoControl.route('/obtenerPedido/<int:idPedido>', methods=['GET'])
+def obtenerPedido(idPedido):
+    pedido = Pedido(id=idPedido)
+    result = pedido.obtenerPedidoPorId()
     return jsonify(result)
+
+
+@pedidoControl.route('/listarPedidosPorCliente/<int:idCliente>', methods=['GET'])
+def listar_pedidos_por_cliente(idCliente):
+    pedido = Pedido()
+    result = pedido.listarPedidosPorCliente(idCliente)
+    return jsonify(result)
+
+
+@pedidoControl.route('/listarPedidosPorAtender', methods=['GET'])
+def listarPedidosPorAtender():
+    pedido = Pedido()
+    result = pedido.listarPedidosPorAtender()
+    return jsonify(result)
+
