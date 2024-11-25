@@ -19,7 +19,7 @@ class ReservaMesa:
                     self.numMesa,
                     self.fecha,
                     self.estado,
-                    0  # Valor de salida para idReserva
+                    0 
                 )
                 cursor.callproc('registrarReserva', params)
                 cursor.execute("SELECT @_registrarReserva_5 AS idReserva;")
@@ -27,6 +27,55 @@ class ReservaMesa:
                 self.idReserva = result['idReserva']
                 conn.commit()
                 return {'status': 'success', 'idReserva': self.idReserva}
+        except Exception as e:
+            return {'status': 'error', 'error': str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+    def actualizarReserva(self):
+        try:
+            conn = get_db()
+            with conn.cursor() as cursor:
+                params = (
+                    self.idReserva,
+                    self.fecha,
+                    self.numPersonas,
+                    self.numMesa,
+                    self.estado
+                )
+                cursor.callproc('ActualizarReservaMesa', params)
+                conn.commit()
+                return {'status': 'success', 'message': 'Reserva actualizada correctamente'}
+        except Exception as e:
+            return {'status': 'error', 'error': str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+    @staticmethod
+    def obtenerReservas():
+        try:
+            conn = get_db()
+            with conn.cursor(dictionary=True) as cursor:
+                cursor.callproc('ObtenerReservas')
+                result = cursor.fetchall()
+                return {'status': 'success', 'reservas': result}
+        except Exception as e:
+            return {'status': 'error', 'error': str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+    @staticmethod
+    def obtenerReservasPorFecha(fecha):
+        try:
+            conn = get_db()
+            with conn.cursor(dictionary=True) as cursor:
+                params = (fecha,)
+                cursor.callproc('ObtenerReservasPorFecha', params)
+                result = cursor.fetchall()
+                return {'status': 'success', 'reservas': result}
         except Exception as e:
             return {'status': 'error', 'error': str(e)}
         finally:

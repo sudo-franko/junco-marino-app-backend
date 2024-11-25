@@ -105,7 +105,7 @@ def registrarPedidoCliente():
         return jsonify({'status': 'error', 'message': error_message}), 500
     
 
-@pedidoControl.route('/obtenerQR/<int:id_qr>', methods=['GET'])
+@pedidoControl.route('/obtenerQRPedido/<int:id_qr>', methods=['GET'])
 def obtenerQR(id_qr):
     filename = buscarQR(id_qr)
     if filename:
