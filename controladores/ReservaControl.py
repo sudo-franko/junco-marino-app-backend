@@ -129,3 +129,4 @@ def obtenerQR(id_qr):
         return send_from_directory(current_app.config['QR_FOLDER'], filename)
     else:
         return jsonify({'error': 'Imagen de QR no encontrado'}), 404
+
