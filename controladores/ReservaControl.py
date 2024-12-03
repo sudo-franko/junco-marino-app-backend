@@ -38,16 +38,18 @@ def registrarReserva():
     idCliente = data.get('idCliente')
     numPersonas = data.get('numPersonas')
     numMesa = data.get('numMesa')
-    fecha = data.get('fecha') 
+    fecha = data.get('fecha')
+    estado = data.get('estado')
 
-    if not (numPersonas and numMesa and fecha):
+    if not (numPersonas and numMesa and fecha and estado):
         return jsonify({'status': 'error', 'message': 'Faltan datos requeridos'}), 400
 
     reserva = ReservaMesa(
         idCliente=idCliente,
         numPersonas=numPersonas,
         numMesa=numMesa,
-        fecha=fecha
+        fecha=fecha,
+        estado=estado
     )
 
     result = reserva.registrarReserva()
@@ -94,6 +96,12 @@ def listar_reservas():
     return jsonify(result)
 
 
+@reservaControl.route('/listarReservasPorCliente/<int:id_cliente>', methods=['GET'])
+def listar_reservas_por_cliente(id_cliente):
+    result = ReservaMesa.obtenerReservasPorCliente(id_cliente)
+    return jsonify(result)
+
+
 @reservaControl.route('/listarReservasPorFecha', methods=['GET'])
 def listar_reservas_por_fecha():
     fecha = request.args.get('fecha')
@@ -102,6 +110,17 @@ def listar_reservas_por_fecha():
 
     result = ReservaMesa.obtenerReservasPorFecha(fecha)
     return jsonify(result)
+
+
+@reservaControl.route('/listarMesasReservasPorFecha', methods=['GET'])
+def listar_mesas_reservas_por_fecha():
+    fecha = request.args.get('fecha')
+    if not fecha:
+        return jsonify({'status': 'error', 'message': 'El parámetro fecha es requerido'}), 400
+
+    result = ReservaMesa.obtenerMesasReservasPorFecha(fecha)
+    return jsonify(result)
+
 
 @reservaControl.route('/obtenerQRReserva/<int:id_qr>', methods=['GET'])
 def obtenerQR(id_qr):

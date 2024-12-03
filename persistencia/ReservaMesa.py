@@ -57,7 +57,7 @@ class ReservaMesa:
     def obtenerReservas():
         try:
             conn = get_db()
-            with conn.cursor(dictionary=True) as cursor:
+            with conn.cursor() as cursor:
                 cursor.callproc('ObtenerReservas')
                 result = cursor.fetchall()
                 return {'status': 'success', 'reservas': result}
@@ -71,7 +71,7 @@ class ReservaMesa:
     def obtenerReservasPorFecha(fecha):
         try:
             conn = get_db()
-            with conn.cursor(dictionary=True) as cursor:
+            with conn.cursor() as cursor:
                 params = (fecha,)
                 cursor.callproc('ObtenerReservasPorFecha', params)
                 result = cursor.fetchall()
@@ -81,3 +81,36 @@ class ReservaMesa:
         finally:
             if conn:
                 conn.close()
+
+
+    @staticmethod
+    def obtenerMesasReservasPorFecha(fecha):
+        try:
+            conn = get_db()
+            with conn.cursor() as cursor:
+                params = (fecha,)
+                cursor.callproc('ObtenerMesasReservasPorFecha', params)
+                result = cursor.fetchall()
+                return {'status': 'success', 'reservas': result}
+        except Exception as e:
+            return {'status': 'error', 'error': str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+    
+    @staticmethod
+    def obtenerReservasPorCliente(idCliente):
+        try:
+            conn = get_db()
+            with conn.cursor() as cursor:
+                params = (idCliente,)
+                cursor.callproc('ObtenerReservasPorCliente', params)
+                result = cursor.fetchall()
+                return {'status': 'success', 'reservas': result}
+        except Exception as e:
+            return {'status': 'error', 'error': str(e)}
+        finally:
+            if conn:
+                conn.close()
+
