@@ -61,3 +61,19 @@ class Cliente:
         finally:
             if conn:
                 conn.close()
+
+    def login(self):
+        try:
+            conn = get_db()
+            with conn.cursor() as cursor:
+                params = (
+                    self.usuario,
+                    self.contrasena,)
+                cursor.callproc('loginCliente', params)
+                cliente = cursor.fetchall();
+                return {'status': 'success', 'message': 'Cliente actualizado exitosamente', 'cliente': cliente}
+        except Exception as e:
+            return {'status': 'error', 'error': str(e)}
+        finally:
+            if conn:
+                conn.close()

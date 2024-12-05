@@ -117,6 +117,30 @@ class Pedido:
                 conn.close()
 
 
+    def obtenerEstadoPedidoPorId(self):
+        try:
+            conn = get_db()
+            with conn.cursor() as cursor:
+                params = (self.id,)
+                cursor.callproc('obtenerEstadoPedidoPorId', params)
+                result = cursor.fetchall()
+                
+                pedidos = []
+                for row in result:
+                    pedidos.append({
+                        'estado': row['estado'],
+                        'calificacion': row['calificacion'],
+                        'comentario': row['comentario']
+                    })
+                
+                return {'status': 'success', 'pedidos': pedidos}
+        except Exception as e:
+            return {'status': 'error', 'error': str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+
     def listarPedidosPorCliente(self, idCliente):
         try:
             conn = get_db()
@@ -162,7 +186,7 @@ class Pedido:
                     }
                     for pedido in pedidos_result
                 ]
-                return {'status': 'success', 'pedidos': pedidos}
+                return {'status': 'success', 'pedido': pedidos}
 
         except Exception as e:
             return {'status': 'error', 'error': str(e)}

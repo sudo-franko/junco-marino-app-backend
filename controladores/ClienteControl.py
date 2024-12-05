@@ -52,7 +52,7 @@ def actualizarCliente(idCliente):
     direccion = data.get('direccion')
 
     cliente = Cliente(
-        idCliente=idCliente,
+        id=idCliente,
         nombres=nombres,
         apellidos=apellidos,
         correo=correo,
@@ -61,6 +61,29 @@ def actualizarCliente(idCliente):
     )
 
     result = cliente.actualizar()
+
+    if result.get('status') == 'success':
+        return jsonify(result), 200
+    else:
+        return jsonify(result), 500
+    
+
+@clienteControl.route('/loginCliente', methods=['POST'])
+def login():
+    if not request.is_json:
+        return jsonify({'status': 'error', 'message': 'Content-type must be application/json'}), 400
+    
+    data = request.get_json()
+
+    usuario = data.get('usuario')
+    contrasena = data.get('contrasena')
+
+    cliente = Cliente(
+        usuario=usuario,
+        contrasena=contrasena
+    )
+
+    result = cliente.login()
 
     if result.get('status') == 'success':
         return jsonify(result), 200

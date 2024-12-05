@@ -121,6 +121,13 @@ def obtenerPedido(idPedido):
     return jsonify(result)
 
 
+@pedidoControl.route('/obtenerEstadoPedido/<int:idPedido>', methods=['GET'])
+def obtenerEstadoPedido(idPedido):
+    pedido = Pedido(id=idPedido)
+    result = pedido.obtenerEstadoPedidoPorId()
+    return jsonify(result)
+
+
 @pedidoControl.route('/listarPedidosPorCliente/<int:idCliente>', methods=['GET'])
 def listar_pedidos_por_cliente(idCliente):
     pedido = Pedido()
