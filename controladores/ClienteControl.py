@@ -87,5 +87,7 @@ def login():
 
     if result.get('status') == 'success':
         return jsonify(result), 200
+    elif result.get('status') == 'login_error':
+        return jsonify(result), 200
     else:
         return jsonify(result), 500

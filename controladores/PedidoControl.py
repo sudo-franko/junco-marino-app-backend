@@ -141,3 +141,13 @@ def listarPedidosPorAtender():
     result = pedido.listarPedidosPorAtender()
     return jsonify(result)
 
+
+@pedidoControl.route('/listarPedidosPorFecha', methods=['GET'])
+def listarPedidosPorFecha():
+    fecha = request.args.get('fecha')
+    if not fecha:
+        return jsonify({'status': 'error', 'message': 'El parámetro fecha es requerido'}), 400
+    pedido = Pedido()
+    result = pedido.listarPedidosPorFecha(fecha)
+    return jsonify(result)
+

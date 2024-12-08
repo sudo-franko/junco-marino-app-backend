@@ -182,7 +182,39 @@ class Pedido:
                         'id': pedido['id'],
                         'fecha': pedido['fecha'],
                         'estado': pedido['estado'],
-                        'monto': pedido['monto']
+                        'monto': pedido['monto'],
+                        'nombreCliente': pedido['nombreCliente']
+                    }
+                    for pedido in pedidos_result
+                ]
+                return {'status': 'success', 'pedidos': pedidos}
+
+        except Exception as e:
+            return {'status': 'error', 'error': str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+
+    def listarPedidosPorFecha(self, fecha):
+        try:
+            conn = get_db()
+            with conn.cursor() as cursor:
+                params = (fecha,)
+                cursor.callproc('listarPedidosPorFecha', params)
+                
+                pedidos_result = cursor.fetchall()
+
+                if not pedidos_result:
+                    return {'status': 'success', 'pedidos': []}
+                
+                pedidos = [
+                    {
+                        'id': pedido['id'],
+                        'fecha': pedido['fecha'],
+                        'estado': pedido['estado'],
+                        'monto': pedido['monto'],
+                        'nombreCliente': pedido['nombreCliente']
                     }
                     for pedido in pedidos_result
                 ]

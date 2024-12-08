@@ -71,6 +71,9 @@ class Cliente:
                     self.contrasena,)
                 cursor.callproc('loginCliente', params)
                 cliente = cursor.fetchall();
+                if not cliente:
+                    return {'status': 'login_error', 'message': 'Usuario o contraseña incorrectos'}
+                
                 return {'status': 'success', 'message': 'Cliente logeado exitosamente', 'cliente': cliente}
         except Exception as e:
             return {'status': 'error', 'error': str(e)}

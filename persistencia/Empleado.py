@@ -44,10 +44,15 @@ class Empleado:
             with conn.cursor() as cursor:
                 params = (
                     self.usuario,
-                    self.contrasena,)
+                    self.contrasena,
+                )
                 cursor.callproc('loginEmpleado', params)
-                empleado = cursor.fetchall();
+                empleado = cursor.fetchall()
+                if not empleado:
+                    return {'status': 'login_error', 'message': 'Usuario o contraseña incorrectos'}
+                
                 return {'status': 'success', 'message': 'Empleado logeado exitosamente', 'empleado': empleado}
+    
         except Exception as e:
             return {'status': 'error', 'error': str(e)}
         finally:
