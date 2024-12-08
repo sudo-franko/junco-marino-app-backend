@@ -1,6 +1,6 @@
 from db import get_db
 
-class Cliente:
+class Empleado:
     def __init__(self, id=0, nombres="", apellidos="", correo="", telefono="", direccion="", 
                  idUsuario=0, usuario="", contrasena=""):
         self.id = id
@@ -8,12 +8,11 @@ class Cliente:
         self.apellidos = apellidos
         self.correo = correo
         self.telefono = telefono
-        self.direccion = direccion
         self.idUsuario = idUsuario
         self.usuario = usuario
         self.contrasena = contrasena
-
     
+
     def registrar(self):
         try:
             conn = get_db()
@@ -25,39 +24,16 @@ class Cliente:
                     self.apellidos,
                     self.correo,
                     self.telefono, 
-                    self.direccion,
                     0
                 )
-                cursor.callproc('registrarCliente', params)
-                cursor.execute("SELECT @_registrarCliente_7 AS idCliente;")
+                cursor.callproc('registrarEmpleado', params)
+                cursor.execute("SELECT @_registrarEmpleado_6 AS idEmpleado;")
                 result = cursor.fetchone()
-                self.id = result['idCliente']
+                self.id = result['idEmpleado']
                 conn.commit()
-                return {'status': 'success', 'idCliente': self.id}
+                return {'status': 'success', 'idEmpleado': self.id}
         except Exception as e:
              return {'status': 'error', 'error': str(e)}
-        finally:
-            if conn:
-                conn.close()
-
-
-    def actualizar(self):
-        try:
-            conn = get_db()
-            with conn.cursor() as cursor:
-                params = (
-                    self.id,
-                    self.nombres,
-                    self.apellidos,
-                    self.correo,
-                    self.telefono,
-                    self.direccion
-                )
-                cursor.callproc('actualizarCliente', params)
-                conn.commit()
-                return {'status': 'success', 'message': 'Cliente actualizado exitosamente'}
-        except Exception as e:
-            return {'status': 'error', 'error': str(e)}
         finally:
             if conn:
                 conn.close()
@@ -69,9 +45,9 @@ class Cliente:
                 params = (
                     self.usuario,
                     self.contrasena,)
-                cursor.callproc('loginCliente', params)
-                cliente = cursor.fetchall();
-                return {'status': 'success', 'message': 'Cliente logeado exitosamente', 'cliente': cliente}
+                cursor.callproc('loginEmpleado', params)
+                empleado = cursor.fetchall();
+                return {'status': 'success', 'message': 'Empleado logeado exitosamente', 'empleado': empleado}
         except Exception as e:
             return {'status': 'error', 'error': str(e)}
         finally:

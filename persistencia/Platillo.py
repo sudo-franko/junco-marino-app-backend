@@ -9,6 +9,24 @@ class Platillo:
         self.disponible = disponible
         self.categoria = categoria
 
+    def modificarEstado(self):
+        try:
+            conn = get_db()
+            with conn.cursor() as cursor:
+                params = (
+                    self.id,
+                    self.disponible
+                )
+                cursor.callproc('ModificarEstadoPlatillo', params)
+                conn.commit()
+                return {'status': 'success', 'message': 'Platillo actualizado exitosamente'}
+        except Exception as e:
+            return {'status': 'error', 'error': str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+
     def listar(self):
         try:
             conn = get_db()
@@ -22,7 +40,8 @@ class Platillo:
         finally:
             if conn:
                 conn.close()
-        
+
+
     def listarCategorias(self):
         try:
             conn = get_db()

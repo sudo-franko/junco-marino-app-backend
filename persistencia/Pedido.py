@@ -186,7 +186,7 @@ class Pedido:
                     }
                     for pedido in pedidos_result
                 ]
-                return {'status': 'success', 'pedido': pedidos}
+                return {'status': 'success', 'pedidos': pedidos}
 
         except Exception as e:
             return {'status': 'error', 'error': str(e)}

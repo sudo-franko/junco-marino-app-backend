@@ -6,6 +6,7 @@ from controladores.PlatilloControl import platilloControl
 from controladores.PedidoControl import pedidoControl
 from controladores.ClienteControl import clienteControl
 from controladores.ReservaControl import reservaControl
+from controladores.EmpleadoControl import empleadoControl
 
 app = Flask(__name__)
 CORS(app)
@@ -37,6 +38,7 @@ def saludar():
 app.register_blueprint(platilloControl)
 app.register_blueprint(pedidoControl)
 app.register_blueprint(clienteControl)
+app.register_blueprint(empleadoControl)
 app.register_blueprint(reservaControl)
 
 

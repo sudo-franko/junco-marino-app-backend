@@ -18,6 +18,28 @@ def find_file(id, folder):
         return False
 
 
+@platilloControl.route('/modificarEstadoPlatillo/<int:idPlatillo>', methods=['PUT'])
+def modificarEstadoPlatillo(idPlatillo):
+    if not request.is_json:
+        return jsonify({'status': 'error', 'message': 'Content-type must be application/json'}), 400
+    
+    data = request.get_json()
+
+    disponible = data.get('disponible')
+
+    platillo = Platillo(
+        id=idPlatillo,
+        disponible=disponible
+    )
+
+    result = platillo.modificarEstado()
+
+    if result.get('status') == 'success':
+        return jsonify(result), 200
+    else:
+        return jsonify(result), 500
+
+
 @platilloControl.route('/listarPlatillos')
 def listar():
     platillo = Platillo()
