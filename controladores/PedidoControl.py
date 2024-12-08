@@ -128,6 +128,18 @@ def obtenerEstadoPedido(idPedido):
     return jsonify(result)
 
 
+@pedidoControl.route('/modificarEstadoPedido/<int:idPedido>', methods=['PUT'])
+def modificarEstadoPedido(idPedido):
+    if not request.is_json:
+        return jsonify({'status': 'error', 'message': 'Content-type must be application/json'}), 400
+    
+    data = request.get_json()
+    estado = data.get('estado')
+    pedido = Pedido(id=idPedido, estado=estado)
+    result = pedido.modificarEstadoPedidoPorId()
+    return jsonify(result)
+
+
 @pedidoControl.route('/listarPedidosPorCliente/<int:idCliente>', methods=['GET'])
 def listar_pedidos_por_cliente(idCliente):
     pedido = Pedido()

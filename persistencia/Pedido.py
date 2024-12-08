@@ -141,6 +141,22 @@ class Pedido:
                 conn.close()
 
 
+    def modificarEstadoPedidoPorId(self):
+        try:
+            conn = get_db()
+            with conn.cursor() as cursor:
+                params = (self.id, self.estado,)
+                cursor.callproc('modificarEstadoPedidoPorId', params)
+                conn.commit()
+                
+                return {'status': 'success', 'message': 'Estado de pedido modificado'}
+        except Exception as e:
+            return {'status': 'error', 'error': str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+
     def listarPedidosPorCliente(self, idCliente):
         try:
             conn = get_db()
