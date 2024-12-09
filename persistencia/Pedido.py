@@ -133,7 +133,7 @@ class Pedido:
                         'comentario': row['comentario']
                     })
                 
-                return {'status': 'success', 'pedidos': pedidos}
+                return {'status': 'success', 'pedido': pedidos}
         except Exception as e:
             return {'status': 'error', 'error': str(e)}
         finally:
@@ -150,6 +150,22 @@ class Pedido:
                 conn.commit()
                 
                 return {'status': 'success', 'message': 'Estado de pedido modificado'}
+        except Exception as e:
+            return {'status': 'error', 'error': str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+
+    def enviarFeedback(self):
+        try:
+            conn = get_db()
+            with conn.cursor() as cursor:
+                params = (self.id, self.calificacion, self.comentario,)
+                cursor.callproc('enviarFeedbackPedido', params)
+                conn.commit()
+                
+                return {'status': 'success', 'message': 'Feedback enviado'}
         except Exception as e:
             return {'status': 'error', 'error': str(e)}
         finally:
